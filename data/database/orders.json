@@ -1,0 +1,37 @@
+[
+    {
+        "order_id": "1001",
+        "customer_name": "Rahul",
+        "product": "Wireless Headphones",
+        "status": "Out for Delivery",
+        "payment_method": "UPI"
+    },
+    {
+        "order_id": "1002",
+        "customer_name": "Amit",
+        "product": "Smart Watch",
+        "status": "Cancelled",
+        "payment_method": "Credit Card"
+    },
+    {
+        "order_id": "1003",
+        "customer_name": "Priya",
+        "product": "Bluetooth Speaker",
+        "status": "Delivered",
+        "payment_method": "COD"
+    },
+    {
+        "order_id": "1004",
+        "customer_name": "Neha",
+        "product": "Laptop Stand",
+        "status": "Cancelled",
+        "payment_method": "UPI"
+    },
+    {
+        "order_id": "1005",
+        "customer_name": "Arjun",
+        "product": "Mechanical Keyboard",
+        "status": "Cancelled",
+        "payment_method": "Debit Card"
+    }
+]

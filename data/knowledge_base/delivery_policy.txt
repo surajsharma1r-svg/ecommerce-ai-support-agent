@@ -1,0 +1,9 @@
+# ShopEase Delivery Policy
+
+ShopEase offers standard and express delivery options. Standard delivery normally takes 3–5 business days, while express delivery normally takes 1–2 business days. Delivery timelines may vary depending on the delivery location and other operational factors.
+
+After an order has been dispatched, ShopEase provides the customer with a tracking ID that can be used to track the shipment. If an order is delayed beyond its expected delivery timeline, ShopEase will notify the customer and provide an updated estimated delivery date.
+
+Customers can change their delivery address only before the order has been dispatched. Once an order has been dispatched, the delivery address cannot normally be changed.
+
+If the customer is unavailable during delivery, the delivery agent will make up to two delivery attempts. If both delivery attempts are unsuccessful, the order will be moved to the Return-to-Sender (RTS) process.

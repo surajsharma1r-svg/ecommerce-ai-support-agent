@@ -1,0 +1,7 @@
+# ShopEase Payment Policy
+
+ShopEase accepts UPI, credit cards, debit cards, net banking, and Cash on Delivery (COD) as payment methods. COD is available only for eligible products or orders, and availability may vary depending on the order.
+
+If an online payment fails but the customer's account has been charged, ShopEase will verify the payment status. If the payment is confirmed as unsuccessful and the amount was deducted, the amount will be refunded to the original payment method according to the applicable refund process.
+
+For successfully completed online payments, the order will be processed after the payment has been confirmed. For COD orders, payment is collected when the order is delivered.
