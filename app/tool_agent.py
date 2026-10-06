@@ -1,108 +1,89 @@
-import ollama
+import re
 
 from app.tool_executor import execute_tool
 
 
-MODEL_NAME = "llama3.2:3b"
-
-
-TOOL_DEFINITIONS = [
-{
-    "type": "function",
-    "function": {
-        "name": "request_refund",
-        "description": "Submit a refund request for a ShopEase order.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "order_id": {
-                    "type": "string",
-                    "description": "The ShopEase order ID."
-                }
-            },
-            "required": ["order_id"]
-        }
-    }
-}
-]
-
-
 def run_tool_agent(query):
 
+    query_lower = query.lower()
+
     # =========================
-    # 1. Ask LLM
+    # 1. Extract Order ID
     # =========================
 
-    response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
+    match = re.search(
+        r"order\s*(?:id|number|#)?\s*(\d+)",
+        query_lower
+    )
+
+    order_id = match.group(1) if match else None
+
+    # =========================
+    # 2. Order Status
+    # =========================
+
+    status_keywords = [
+        "where",
+        "kaha",
+        "status",
+        "track",
+        "tracking"
+    ]
+
+    if order_id and any(
+        keyword in query_lower
+        for keyword in status_keywords
+    ):
+
+        tool_result = execute_tool(
+            "get_order_status",
             {
-                "role": "user",
-                "content": query
+                "order_id": order_id
             }
-        ],
-        tools=TOOL_DEFINITIONS
-    )
+        )
+
+        if "error" in tool_result:
+            return tool_result["error"]
+
+        return (
+            f"Order {tool_result['order_id']} "
+            f"({tool_result['product']}) is currently "
+            f"{tool_result['status']}. "
+            f"Payment method: {tool_result['payment_method']}."
+        )
 
     # =========================
-    # 2. Check tool call
+    # 3. Cancel Order
     # =========================
 
-    tool_calls = response["message"].get("tool_calls")
+    if order_id and "cancel" in query_lower:
 
-    if not tool_calls:
-        return response["message"]["content"]
-
-    # =========================
-    # 3. Get tool call details
-    # =========================
-
-    tool_call = tool_calls[0]
-
-    tool_name = tool_call["function"]["name"]
-    arguments = tool_call["function"]["arguments"]
-
-    # =========================
-    # 4. Execute tool
-    # =========================
-
-    tool_result = execute_tool(
-        tool_name,
-        arguments
-    )
-
-    # =========================
-    # 5. Ask LLM to create
-    #    final answer
-    # =========================
-
-    final_prompt = f"""
-You are a ShopEase customer support assistant.
-
-The customer asked:
-{query}
-
-A tool was executed to get the required information.
-
-Tool result:
-{tool_result}
-
-Answer the customer's question directly using the tool result.
-
-Do not ask for more information.
-Do not invent information.
-
-Final answer:
-"""
-
-    final_response = ollama.chat(
-        model=MODEL_NAME,
-        messages=[
+        tool_result = execute_tool(
+            "cancel_order",
             {
-                "role": "user",
-                "content": final_prompt
+                "order_id": order_id
             }
-        ]
-    )
+        )
 
-    return final_response["message"]["content"].strip()
+        return tool_result["message"]
+
+    # =========================
+    # 4. Request Refund
+    # =========================
+
+    if order_id and "refund" in query_lower:
+
+        tool_result = execute_tool(
+            "request_refund",
+            {
+                "order_id": order_id
+            }
+        )
+
+        return tool_result["message"]
+
+    # =========================
+    # 5. Unknown Request
+    # =========================
+
+    return "Sorry, I could not understand your request."

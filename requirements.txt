@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+ollama
+numpy
+faiss-cpu
+sentence-transformers
+langchain-text-splitters
+pytest

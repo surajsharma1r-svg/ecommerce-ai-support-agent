@@ -1,40 +1,28 @@
-def route_query (query):
+def route_query(query):
 
     query = query.lower()
 
-    # ==============
-    # RAG Queries 
-    # =============
-
-    rag_keywords =[
-        "policy",
-        "refund",
-        "return",
-        "cancel",
-        "cancellation",
-        "delivery",
-        "payment",
-        "rules",
-        "eligible",
-        "kitne din",
-        "how many days"
-    ]
-
-    # ===============
-    # Tool Queries 
-    # ===============
-    tool_keywords = [
-    "order status",
-    "where is my order",
-    "track my order",
-    "order kaha",
-    "order #",
-    "order number",
-    "order id",
-    "cancel my order",
-    "cancel order",
-    "order"
+    rag_keywords = [
+    "refund",
+    "return",
+    "policy",
+    "delivery",
+    "payment",
+    "rules",
+    "eligible",
+    "how many days",
+    "kitne din"
 ]
+
+    tool_keywords = [
+        "order status",
+        "where is my order",
+        "track my order",
+        "order kaha",
+        "order id",
+        "order number",
+        "order #"
+    ]
 
     has_rag = any(
         keyword in query
@@ -46,18 +34,21 @@ def route_query (query):
         for keyword in tool_keywords
     )
 
+    # Explicit order ID detection
+    import re
 
-    # Routing Decision 
-    # ===================
+    has_order_id = bool(
+        re.search(r"order\s*(?:id|number|#)?\s*\d+", query)
+    )
 
-    if has_rag and has_tool:
+    if has_rag and (has_tool or has_order_id):
         return "BOTH"
 
-    elif has_tool :
+    elif has_tool or has_order_id:
         return "TOOL"
 
     elif has_rag:
         return "RAG"
 
-    else :
+    else:
         return "UNKNOWN"

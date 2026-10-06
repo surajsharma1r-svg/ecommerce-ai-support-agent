@@ -38,18 +38,20 @@ def cancel_order(order_id):
 
         if order["order_id"] == order_id:
 
-            if order["status"] == "Out for Delivery":
+            status = order["status"]
+
+            if status == "Cancelled":
                 return {
                     "order_id": order_id,
                     "success": False,
-                    "message": "Order cannot be cancelled because it is out for delivery."
+                    "message": "Order is already cancelled."
                 }
 
-            if order["status"] == "Delivered":
+            if status != "Processing":
                 return {
                     "order_id": order_id,
                     "success": False,
-                    "message": "Delivered orders cannot be cancelled."
+                    "message": f"Order cannot be cancelled because it is {status}."
                 }
 
             order["status"] = "Cancelled"
@@ -79,6 +81,13 @@ def request_refund(order_id):
     for order in orders:
 
         if order["order_id"] == order_id:
+
+            if order["status"] == "Cancelled":
+                return {
+                    "order_id": order_id,
+                    "success": False,
+                    "message": "Refund cannot be requested for a cancelled order."
+                }
 
             if order["status"] != "Delivered":
                 return {

@@ -1,9 +1,36 @@
-from app.rag_pipeline import run_rag
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-query = input("Customer:")
+from app.agent import run_agent
 
-answer = run_rag(query)
 
-print("\n==== FINAL ANSWER ====")
-print(answer)
+app = FastAPI(
+    title="ShopEase AI Support Agent",
+    description="AI Customer Support Agent using RAG, Tool Calling and Agentic Workflows",
+    version="1.0.0"
+)
 
+
+class ChatRequest(BaseModel):
+    query: str
+
+
+class ChatResponse(BaseModel):
+    answer: str
+
+
+@app.get("/")
+def home():
+    return {
+        "message": "ShopEase AI Support Agent is running"
+    }
+
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest):
+
+    answer = run_agent(request.query)
+
+    return {
+        "answer": answer
+    }
